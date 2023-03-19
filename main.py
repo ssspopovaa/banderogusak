@@ -11,25 +11,29 @@ COLOR_RED = 255, 0, 0
 COLOR_GREEN = 0, 255, 0
 
 screen = width, height = 800, 600
+font = pygame.font.SysFont('Verdana', 20)
 
 mainSurface = pygame.display.set_mode(screen)
 
-ball = pygame.Surface((20,20))
-ball.fill(COLOR_WHITE)
-ballRect = ball.get_rect()
-ballSpeed = 5
+player = pygame.image.load('player.png').convert_alpha()
+playerRect = player.get_rect()
+playerSpeed = 5
+
+bg = pygame.transform.scale(pygame.image.load('background.png').convert(), screen)
+bgX = 0
+bgX2 = bg.get_width()
+bgSpeed = 3
+
 
 def creteEnemy():
-    enemy = pygame.Surface((20,20))
-    enemy.fill(COLOR_RED)
+    enemy = pygame.transform.scale(pygame.image.load('enemy.png').convert_alpha(), (100, 35))
     enemyRect = pygame.Rect(width, random.randint(0, height), *enemy.get_size())
     enemySpeed = random.randint(2, 5)
 
     return [enemy, enemyRect, enemySpeed]
 
 def creteBonus():
-    bonus = pygame.Surface((20,20))
-    bonus.fill(COLOR_GREEN)
+    bonus = pygame.transform.scale(pygame.image.load('bonus.png').convert_alpha(), (50, 80))
     bonusRect = pygame.Rect(random.randint(0, width), 0, *bonus.get_size())
     bonusSpeed = random.randint(2, 5)
 
@@ -42,6 +46,7 @@ pygame.time.set_timer(CREATE_BONUS, 5000)
 
 enemies = []
 bonuses = []
+scores  = 0
 
 isActive = True
 while isActive:
@@ -57,8 +62,18 @@ while isActive:
 
     pressedKeys = pygame.key.get_pressed()
 
-    mainSurface.fill(COLOR_BLACK)
-    mainSurface.blit(ball, ballRect)
+    bgX -= bgSpeed
+    bgX2 -= bgSpeed
+    if bgX < -bg.get_width():
+        bgX = bg.get_width()
+    if bgX2 < -bg.get_width():
+        bgX2 = bg.get_width()
+
+    mainSurface.blit(bg, (bgX, 0))
+    mainSurface.blit(bg, (bgX2, 0))
+
+    mainSurface.blit(player, playerRect)
+    mainSurface.blit(font.render(str(scores), True, COLOR_BLACK), (width - 30, 20))
 
     for enemy in enemies:
         enemy[1] = enemy[1].move(-enemy[2], 0)
@@ -66,8 +81,8 @@ while isActive:
 
         if enemy[1].left < 0:
             enemies.pop(enemies.index(enemy))
-        if ballRect.colliderect(enemy[1]):
-            enemies.pop(enemies.index(enemy))
+        if playerRect.colliderect(enemy[1]):
+            isActive = False
 
     for bonus in bonuses:
         bonus[1] = bonus[1].move(0, bonus[2])
@@ -75,16 +90,17 @@ while isActive:
 
         if bonus[1].bottom >= height:
             bonuses.pop(bonuses.index(bonus))
-        if ballRect.colliderect(bonus[1]):
+        if playerRect.colliderect(bonus[1]):
             bonuses.pop(bonuses.index(bonus))
+            scores += 1
 
-    if pressedKeys[K_DOWN] and ballRect.bottom < height:
-        ballRect = ballRect.move(0, ballSpeed)
-    if pressedKeys[K_UP] and ballRect.top > 0:
-        ballRect = ballRect.move(0, -ballSpeed)
-    if pressedKeys[K_RIGHT] and ballRect.right < width:
-        ballRect = ballRect.move(ballSpeed, 0)
-    if pressedKeys[K_LEFT] and ballRect.left > 0:
-        ballRect = ballRect.move(-ballSpeed, 0)
+    if pressedKeys[K_DOWN] and playerRect.bottom < height:
+        playerRect = playerRect.move(0, playerSpeed)
+    if pressedKeys[K_UP] and playerRect.top > 0:
+        playerRect = playerRect.move(0, -playerSpeed)
+    if pressedKeys[K_RIGHT] and playerRect.right < width:
+        playerRect = playerRect.move(playerSpeed, 0)
+    if pressedKeys[K_LEFT] and playerRect.left > 0:
+        playerRect = playerRect.move(-playerSpeed, 0)
 
     pygame.display.flip()
