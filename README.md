@@ -1,0 +1,2 @@
+# banderogusak
+First python game
