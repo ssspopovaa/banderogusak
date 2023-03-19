@@ -1,5 +1,6 @@
 import pygame, random
 from pygame.constants import QUIT, K_DOWN, K_UP, K_LEFT, K_RIGHT
+from os import listdir
 
 pygame.init()
 
@@ -15,34 +16,39 @@ font = pygame.font.SysFont('Verdana', 20)
 
 mainSurface = pygame.display.set_mode(screen)
 
-player = pygame.image.load('player.png').convert_alpha()
+IMG_PATH = 'goose'
+playerImages = [pygame.image.load(IMG_PATH + '/' + file).convert_alpha() for file in listdir(IMG_PATH)]
+
+imageIndex = 0
+player = playerImages[imageIndex]
 playerRect = player.get_rect()
 playerSpeed = 5
 
 bg = pygame.transform.scale(pygame.image.load('background.png').convert(), screen)
 bgX = 0
 bgX2 = bg.get_width()
-bgSpeed = 3
-
+bgSpeed = 2
 
 def creteEnemy():
     enemy = pygame.transform.scale(pygame.image.load('enemy.png').convert_alpha(), (100, 35))
-    enemyRect = pygame.Rect(width, random.randint(0, height), *enemy.get_size())
+    enemyRect = pygame.Rect(width, random.randint(0, height - enemy.get_size()[1]), *enemy.get_size())
     enemySpeed = random.randint(2, 5)
 
     return [enemy, enemyRect, enemySpeed]
 
 def creteBonus():
     bonus = pygame.transform.scale(pygame.image.load('bonus.png').convert_alpha(), (50, 80))
-    bonusRect = pygame.Rect(random.randint(0, width), 0, *bonus.get_size())
-    bonusSpeed = random.randint(2, 5)
+    bonusRect = pygame.Rect(random.randint(0, width - bonus.get_size()[0]), 0, *bonus.get_size())
+    bonusSpeed = 2
 
     return [bonus, bonusRect, bonusSpeed]
 
 CREATE_ENEMY = pygame.USEREVENT +1
 CREATE_BONUS = pygame.USEREVENT +2
+ANIMATE_PLAYER = pygame.USEREVENT +3
 pygame.time.set_timer(CREATE_ENEMY, 1500)
 pygame.time.set_timer(CREATE_BONUS, 5000)
+pygame.time.set_timer(ANIMATE_PLAYER, 150)
 
 enemies = []
 bonuses = []
@@ -59,6 +65,12 @@ while isActive:
             enemies.append(creteEnemy())
         if event.type == CREATE_BONUS:
             bonuses.append(creteBonus())
+        if event.type == ANIMATE_PLAYER:
+            imageIndex += 1
+            if imageIndex == len(playerImages):
+                imageIndex = 0
+
+            player = playerImages[imageIndex]
 
     pressedKeys = pygame.key.get_pressed()
 
