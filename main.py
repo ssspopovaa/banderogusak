@@ -11,7 +11,7 @@ COLOR_BLACK = 0, 0, 0
 COLOR_RED = 255, 0, 0
 COLOR_GREEN = 0, 255, 0
 
-screen = width, height = 800, 600
+screen = width, height = 1600, 1100
 font = pygame.font.SysFont('Verdana', 20)
 
 mainSurface = pygame.display.set_mode(screen)
@@ -32,7 +32,7 @@ bgSpeed = 2
 def creteEnemy():
     enemy = pygame.transform.scale(pygame.image.load('enemy.png').convert_alpha(), (100, 35))
     enemyRect = pygame.Rect(width, random.randint(0, height - enemy.get_size()[1]), *enemy.get_size())
-    enemySpeed = random.randint(2, 5)
+    enemySpeed = random.randint(3, 5)
 
     return [enemy, enemyRect, enemySpeed]
 
