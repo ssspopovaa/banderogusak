@@ -30,6 +30,7 @@ bgX2 = bg.get_width()
 bgSpeed = 2
 
 bgEnd = pygame.transform.scale(pygame.image.load('background-end.png').convert(), screen)
+fontEnd = pygame.font.SysFont('Verdana', 100)
 
 def creteEnemy():
     enemy = pygame.transform.scale(pygame.image.load('enemy.png').convert_alpha(), (100, 35))
@@ -86,14 +87,16 @@ while isExit:
             bgX = bg.get_width()
         if bgX2 < -bg.get_width():
             bgX2 = bg.get_width()
+    
         mainSurface.blit(bg, (bgX, 0))
         mainSurface.blit(bg, (bgX2, 0))
     else:
         mainSurface.blit(bgEnd, (0, 0))
+        mainSurface.blit(fontEnd.render('Your record: ' + str(scores), True, COLOR_RED), (width - 1150, 400))    
 
 
     mainSurface.blit(player, playerRect)
-    mainSurface.blit(font.render(str(scores), True, COLOR_BLACK), (width - 30, 20))
+    mainSurface.blit(font.render('Score: ' + str(scores), True, COLOR_BLACK), (width - 100, 20))
 
     for enemy in enemies:
         enemy[1] = enemy[1].move(-enemy[2], 0)
