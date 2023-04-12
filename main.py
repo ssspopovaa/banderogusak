@@ -29,6 +29,8 @@ bgX = 0
 bgX2 = bg.get_width()
 bgSpeed = 2
 
+bgEnd = pygame.transform.scale(pygame.image.load('background-end.png').convert(), screen)
+
 def creteEnemy():
     enemy = pygame.transform.scale(pygame.image.load('enemy.png').convert_alpha(), (100, 35))
     enemyRect = pygame.Rect(width, random.randint(0, height - enemy.get_size()[1]), *enemy.get_size())
@@ -55,17 +57,19 @@ bonuses = []
 scores  = 0
 
 isActive = True
-while isActive:
+isExit = True
+while isExit:
     FPS.tick(60)
 
     for event in pygame.event.get():
         if event.type == QUIT:
             isActive = False
-        if event.type == CREATE_ENEMY:
+            isExit = False
+        if event.type == CREATE_ENEMY and isActive :
             enemies.append(creteEnemy())
-        if event.type == CREATE_BONUS:
+        if event.type == CREATE_BONUS and isActive :
             bonuses.append(creteBonus())
-        if event.type == ANIMATE_PLAYER:
+        if event.type == ANIMATE_PLAYER  and isActive:
             imageIndex += 1
             if imageIndex == len(playerImages):
                 imageIndex = 0
@@ -74,15 +78,19 @@ while isActive:
 
     pressedKeys = pygame.key.get_pressed()
 
-    bgX -= bgSpeed
-    bgX2 -= bgSpeed
-    if bgX < -bg.get_width():
-        bgX = bg.get_width()
-    if bgX2 < -bg.get_width():
-        bgX2 = bg.get_width()
+    if isActive :
+        bgX -= bgSpeed
+        bgX2 -= bgSpeed
 
-    mainSurface.blit(bg, (bgX, 0))
-    mainSurface.blit(bg, (bgX2, 0))
+        if bgX < -bg.get_width():
+            bgX = bg.get_width()
+        if bgX2 < -bg.get_width():
+            bgX2 = bg.get_width()
+        mainSurface.blit(bg, (bgX, 0))
+        mainSurface.blit(bg, (bgX2, 0))
+    else:
+        mainSurface.blit(bgEnd, (0, 0))
+
 
     mainSurface.blit(player, playerRect)
     mainSurface.blit(font.render(str(scores), True, COLOR_BLACK), (width - 30, 20))
@@ -116,3 +124,5 @@ while isActive:
         playerRect = playerRect.move(-playerSpeed, 0)
 
     pygame.display.flip()
+
+# mainSurface.blit(bgEnd, (0, 0))
