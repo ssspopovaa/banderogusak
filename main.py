@@ -11,7 +11,7 @@ COLOR_BLACK = 0, 0, 0
 COLOR_RED = 255, 0, 0
 COLOR_GREEN = 0, 255, 0
 
-screen = width, height = 1600, 1100
+screen = width, height = 1600, 900
 font = pygame.font.SysFont('Verdana', 20)
 
 mainSurface = pygame.display.set_mode(screen)
