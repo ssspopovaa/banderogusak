@@ -14,7 +14,10 @@ COLOR_GREEN = 0, 255, 0
 screen = width, height = 1600, 900
 font = pygame.font.SysFont('Verdana', 20)
 
+pygame.display.set_caption("Bandero-Gusak")
+
 mainSurface = pygame.display.set_mode(screen)
+
 
 IMG_PATH = 'goose'
 playerImages = [pygame.image.load(IMG_PATH + '/' + file).convert_alpha() for file in listdir(IMG_PATH)]
